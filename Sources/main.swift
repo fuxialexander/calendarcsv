@@ -1,4 +1,22 @@
+//
+//  main.swift
+//  calendarcsv
+//
+//  Created by Xi Fu on 6/26/17.
+//  Copyright © 2017 Xi Fu. All rights reserved.
+//
+
 import EventKit
+import Foundation
+
+var standardError = FileHandle.standardError
+
+extension FileHandle : TextOutputStream {
+    public func write(_ string: String) {
+        guard let data = string.data(using: .utf8) else { return }
+        self.write(data)
+    }
+}
 
 let eventStore = EKEventStore()
 let daysToSynchronize = Int(CommandLine.arguments[1])
@@ -16,12 +34,12 @@ func checkCalendarAuthorizationStatus() {
         
     case EKAuthorizationStatus.authorized:
         
-        print("Done.")
+        print("Done", to:&standardError)
         
         
     case EKAuthorizationStatus.restricted, EKAuthorizationStatus.denied:
         // We need to help them give us permission
-        print("Denied")
+        print("Denied", to:&standardError)
     }
 }
 
@@ -30,9 +48,9 @@ func requestAccessToCalendar() {
         (accessGranted: Bool, error: Error?) in
         
         if accessGranted == true {
-            print("Granted")
+            print("Granted", to:&standardError)
         } else {
-            print("Need permissions")
+            print("Need permissions", to:&standardError)
         }
     })
 }
