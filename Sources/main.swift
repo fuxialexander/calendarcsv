@@ -39,7 +39,7 @@ func requestAccessToCalendar() {
 
 checkCalendarAuthorizationStatus()
 
-eventStore.enumerateEvents(matching:eventStore.predicateForEvents(withStart: Date().addingTimeInterval(TimeInterval(-1*daysToSynchronize*60*60*24)), end: Date(), calendars: nil), using:{
+eventStore.enumerateEvents(matching:eventStore.predicateForEvents(withStart: Date().addingTimeInterval(TimeInterval(-1*daysToSynchronize!*60*60*24)), end: Date(), calendars: nil), using:{
     (event:EKEvent, stop:UnsafeMutablePointer<ObjCBool>) in
     
     print(datefor.string(from: event.startDate), datefor.string(from: event.endDate), event.title, event.calendar.title, separator: "\t")
