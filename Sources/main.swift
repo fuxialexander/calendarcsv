@@ -1,22 +1,4 @@
-//
-//  main.swift
-//  calendarcsv
-//
-//  Created by Xi Fu on 6/26/17.
-//  Copyright © 2017 Xi Fu. All rights reserved.
-//
-
 import EventKit
-import Foundation
-
-var standardError = FileHandle.standardError
-
-extension FileHandle : TextOutputStream {
-    public func write(_ string: String) {
-        guard let data = string.data(using: .utf8) else { return }
-        self.write(data)
-    }
-}
 
 let eventStore = EKEventStore()
 let daysToSynchronize = Int(CommandLine.arguments[1])
@@ -34,12 +16,12 @@ func checkCalendarAuthorizationStatus() {
         
     case EKAuthorizationStatus.authorized:
         
-        print("Done", to:&standardError)
+        print("Done.")
         
         
     case EKAuthorizationStatus.restricted, EKAuthorizationStatus.denied:
         // We need to help them give us permission
-        print("Denied", to:&standardError)
+        print("Denied")
     }
 }
 
@@ -48,16 +30,16 @@ func requestAccessToCalendar() {
         (accessGranted: Bool, error: Error?) in
         
         if accessGranted == true {
-            print("Granted", to:&standardError)
+            print("Granted")
         } else {
-            print("Need permissions", to:&standardError)
+            print("Need permissions")
         }
     })
 }
 
 checkCalendarAuthorizationStatus()
-print("start\tend\tevent\tcalendar")
-eventStore.enumerateEvents(matching:eventStore.predicateForEvents(withStart: Date().addingTimeInterval(TimeInterval(-1*daysToSynchronize!*60*60*24)), end: Date(), calendars: nil), using:{
+
+eventStore.enumerateEvents(matching:eventStore.predicateForEvents(withStart: Date().addingTimeInterval(TimeInterval(-1*daysToSynchronize*60*60*24)), end: Date().addingTimeInterval(TimeInterval(1*daysToSynchronize*60*60*24)), calendars: nil), using:{
     (event:EKEvent, stop:UnsafeMutablePointer<ObjCBool>) in
     
     print(datefor.string(from: event.startDate), datefor.string(from: event.endDate), event.title, event.calendar.title, separator: "\t")
